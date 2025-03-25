@@ -12,22 +12,34 @@ export default function TaskCard({
   toggleTask,
   deleteTask,
 }: TaskCardProps) {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleTask(task.id);
+    }
+  };
   return (
     <div
       className={styles.taskCard}
-      onClick={() => toggleTask(task.id)}
       data-completed={task.completed}
+      role="listitem"
+      tabIndex={0}
+      onKeyDown={handleKeyPress}
+      onClick={() => toggleTask(task.id)}
     >
       <div className={styles.taskInfo}>
-        <span className={styles.checkboxWrapper}>
+        <label className={styles.checkboxWrapper}>
           <input
             type="checkbox"
             checked={task.completed}
             className={styles.checkbox}
             onChange={() => toggleTask(task.id)}
+            aria-label={`Mark "${task.title}" as ${
+              task.completed ? "incomplete" : "complete"
+            }`}
           />
-          <span className={styles.checkboxCustom} />
-        </span>
+          <span className={styles.checkboxCustom} role="presentation" />
+        </label>
         <div>
           <div className={styles.taskTitle} data-completed={task.completed}>
             {task.title}
@@ -38,9 +50,12 @@ export default function TaskCard({
         </div>
       </div>
       <button
-        onClick={() => deleteTask(task.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          deleteTask(task.id);
+        }}
         className={styles.deleteButton}
-        aria-label="Delete task"
+        aria-label={`Delete task: ${task.title}`}
       >
         Delete
       </button>

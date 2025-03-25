@@ -7,8 +7,31 @@ import * as styles from "./Home.css";
 
 export function meta() {
   return [
-    { title: "React Task Manager" },
-    { name: "description", content: "Manage your tasks with ease" },
+    { title: "Welcome | React Task Manager" },
+    {
+      name: "description",
+      content:
+        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
+    },
+    {
+      name: "keywords",
+      content:
+        "task manager, login, sign in, productivity app, task organization",
+    },
+    { property: "og:title", content: "Welcome | React Task Manager" },
+    {
+      property: "og:description",
+      content:
+        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:title", content: "Welcome | React Task Manager" },
+    {
+      name: "twitter:description",
+      content:
+        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
+    },
+    { name: "robots", content: "index, nofollow" },
   ];
 }
 

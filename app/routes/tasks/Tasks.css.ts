@@ -14,19 +14,23 @@ export const form = style({
 
 export const button = style({
   padding: "0.75rem 1.5rem",
-  backgroundColor: "#000000",
-  color: "white",
+  backgroundColor: "var(--colour-black)",
+  color: "var(--colour-white)",
   border: "none",
   fontSize: "1rem",
   cursor: "pointer",
   height: "3rem",
   transition: "all 100ms ease-in-out",
   ":hover": {
-    backgroundColor: "#d1d1d1",
+    backgroundColor: "#404040",
   },
   ":disabled": {
-    backgroundColor: "#a0a0a0",
+    backgroundColor: "var(--colour-grey)",
     cursor: "not-allowed",
+  },
+  ":focus": {
+    outline: "2px solid var(--colour-blue)",
+    outlineOffset: "2px",
   },
 });
 
@@ -38,20 +42,23 @@ export const filterContainer = style({
 
 export const filterButton = style({
   padding: "0.5rem 1rem",
-  border: "1px solid #000000",
-  backgroundColor: "white",
+  border: "1px solid var(--colour-black)",
+  backgroundColor: "var(--colour-white)",
+  color: "var(--colour-black)",
   cursor: "pointer",
   transition: "all 100ms ease-in-out",
   ":hover": {
-    backgroundColor: "#000000",
-    color: "white",
-    borderColor: "#000000",
+    backgroundColor: "var(--colour-black)",
+    color: "var(--colour-white)",
+  },
+  ":focus": {
+    outline: "2px solid var(--colour-blue)",
+    outlineOffset: "2px",
   },
   selectors: {
     '&[data-active="true"]': {
-      backgroundColor: "#000000",
-      color: "white",
-      borderColor: "#000000",
+      backgroundColor: "var(--colour-black)",
+      color: "var(--colour-white)",
     },
   },
 });
@@ -59,4 +66,13 @@ export const filterButton = style({
 export const taskList = style({
   display: "grid",
   gap: "1rem",
+});
+
+export const errorMessage = style({
+  color: "var(--colour-red)",
+  marginTop: "0.5rem",
+  fontSize: "0.875rem",
+  padding: "0.5rem",
+  backgroundColor: "#fef2f2",
+  border: "1px solid var(--colour-red)",
 });

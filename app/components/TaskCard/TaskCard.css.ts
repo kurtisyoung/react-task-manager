@@ -1,26 +1,40 @@
 import { style } from "@vanilla-extract/css";
 
 export const checkbox = style({
-  display: "none",
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  padding: "0",
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  border: "0",
 });
 
 export const checkboxCustom = style({
-  width: "1rem",
-  height: "1rem",
-  backgroundColor: "white",
-  border: "1px solid #000000",
+  width: "0.75rem",
+  height: "0.75rem",
+  backgroundColor: "var(--colour-white)",
+  border: "2px solid var(--colour-black)",
   cursor: "pointer",
-  borderRadius: "50%",
   transition: "all 100ms ease-in-out",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 
   selectors: {
     [`${checkbox}:checked + &`]: {
-      backgroundColor: "#000000",
-      borderColor: "#000000",
+      backgroundColor: "var(--colour-black)",
+      borderColor: "var(--colour-black)",
+    },
+    [`${checkbox}:focus + &`]: {
+      outline: "2px solid var(--colour-blue)",
+      outlineOffset: "2px",
     },
     "&:hover": {
-      backgroundColor: "#d1d1d1 !important",
-      borderColor: "#d1d1d1 !important",
+      borderColor: "var(--colour-black) !important",
+      backgroundColor: "var(--colour-white) !important",
     },
   },
 });
@@ -30,17 +44,17 @@ export const taskCard = style({
   justifyContent: "space-between",
   alignItems: "center",
   padding: "1rem",
-  backgroundColor: "#ffffff",
-  border: "1px solid #000000",
-  cursor: "pointer",
+  backgroundColor: "var(--colour-white)",
+  border: "1px solid var(--colour-black)",
   transition: "all 100ms ease-in-out",
+  cursor: "pointer",
 
   selectors: {
     '&[data-completed="true"]': {
-      borderColor: "#b1b1b1",
+      opacity: 0.5,
     },
     "&:hover": {
-      borderColor: "#dddddd",
+      borderColor: "#bababa",
     },
   },
 });
@@ -55,40 +69,45 @@ export const checkboxWrapper = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: "1.25rem",
-  height: "1.25rem",
+  position: "relative",
 });
 
 export const taskTitle = style({
   fontSize: "1rem",
-  fontWeight: "semibold",
+  fontWeight: "500",
+  color: "var(--colour-black)",
   selectors: {
     '&[data-completed="true"]': {
       textDecoration: "line-through",
-      color: "#b3b3b3",
+      color: "var(--colour-grey)",
     },
   },
 });
 
 export const taskDate = style({
-  color: "#8e8e8e",
+  color: "var(--colour-grey)",
   fontSize: "0.875rem",
   selectors: {
     '&[data-completed="true"]': {
       textDecoration: "line-through",
-      color: "#b3b3b3",
+      color: "var(--colour-grey)",
     },
   },
 });
 
 export const deleteButton = style({
-  padding: "0.5rem",
-  backgroundColor: "#000000",
-  color: "white",
+  padding: "0.5rem 1rem",
+  backgroundColor: "var(--colour-red)",
+  color: "var(--colour-white)",
   border: "none",
   cursor: "pointer",
   transition: "all 100ms ease-in-out",
+  fontSize: "0.875rem",
   ":hover": {
-    backgroundColor: "#5d0202",
+    backgroundColor: "#b91c1c",
+  },
+  ":focus": {
+    outline: "2px solid var(--colour-blue)",
+    outlineOffset: "2px",
   },
 });

@@ -22,6 +22,36 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  { rel: "icon", type: "image/png", href: "/favicon.png" },
+];
+
+export const meta: Route.MetaFunction = () => [
+  { title: "React Task Manager" },
+  {
+    name: "description",
+    content:
+      "A modern task management application to help you stay organized and productive.",
+  },
+  {
+    name: "keywords",
+    content: "task manager, todo list, productivity, organization, react",
+  },
+  { name: "author", content: "React Task Manager" },
+  { property: "og:title", content: "React Task Manager" },
+  {
+    property: "og:description",
+    content:
+      "A modern task management application to help you stay organized and productive.",
+  },
+  { property: "og:type", content: "website" },
+  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:title", content: "React Task Manager" },
+  {
+    name: "twitter:description",
+    content:
+      "A modern task management application to help you stay organized and productive.",
+  },
+  { name: "theme-color", content: "#1a1a1a" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -30,7 +60,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" href="/favicon.png" />
         <Meta />
         <Links />
       </head>
