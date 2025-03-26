@@ -19,7 +19,10 @@ interface TaskProviderProps {
 
 export function TaskProvider({ children }: TaskProviderProps) {
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedTasks = localStorage.getItem("tasks");
+    const savedTasks =
+      typeof localStorage !== "undefined"
+        ? localStorage.getItem("tasks")
+        : null;
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
 

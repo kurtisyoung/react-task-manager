@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import * as styles from "./Header.css";
 import { useAuth } from "~/context/AuthContext";
+import * as styles from "./Header.css";
 
 export default function Header() {
   const { logout, isAuthenticated } = useAuth();

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useTasks } from "~/context/TaskContext";
+import { useAuth } from "~/context/AuthContext";
 import TaskCard from "~/components/TaskCard";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
@@ -13,24 +15,6 @@ export function meta() {
       content:
         "Manage and organize your tasks efficiently. Create, track, and complete tasks with our intuitive task management interface.",
     },
-    {
-      name: "keywords",
-      content: "task management, todo list, task tracking, productivity tools",
-    },
-    { property: "og:title", content: "Tasks | React Task Manager" },
-    {
-      property: "og:description",
-      content:
-        "Manage and organize your tasks efficiently. Create, track, and complete tasks with our intuitive task management interface.",
-    },
-    { property: "og:type", content: "website" },
-    { name: "twitter:title", content: "Tasks | React Task Manager" },
-    {
-      name: "twitter:description",
-      content:
-        "Manage and organize your tasks efficiently. Create, track, and complete tasks with our intuitive task management interface.",
-    },
-    { name: "robots", content: "index, follow" },
   ];
 }
 
@@ -41,6 +25,14 @@ export default function Tasks() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addTask, toggleTask, deleteTask, filterTasks } = useTasks();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +58,6 @@ export default function Tasks() {
   return (
     <main>
       <Header />
-
       <section aria-label="Add new task">
         <form
           onSubmit={handleSubmit}

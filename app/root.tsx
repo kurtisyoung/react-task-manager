@@ -44,7 +44,7 @@ export const meta: Route.MetaFunction = () => [
       "A modern task management application to help you stay organized and productive.",
   },
   { property: "og:type", content: "website" },
-  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:card", content: "aritzia-logo.svg" },
   { name: "twitter:title", content: "React Task Manager" },
   {
     name: "twitter:description",
@@ -52,6 +52,7 @@ export const meta: Route.MetaFunction = () => [
       "A modern task management application to help you stay organized and productive.",
   },
   { name: "theme-color", content: "#1a1a1a" },
+  { name: "robots", content: "index, follow" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {

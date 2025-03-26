@@ -21,7 +21,9 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem("isAuthenticated") === "true";
+    return typeof sessionStorage !== "undefined"
+      ? sessionStorage?.getItem("isAuthenticated") === "true"
+      : false;
   });
 
   useEffect(() => {

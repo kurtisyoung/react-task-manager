@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import InputGroup from "~/components/InputGroup";
@@ -13,25 +13,6 @@ export function meta() {
       content:
         "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
     },
-    {
-      name: "keywords",
-      content:
-        "task manager, login, sign in, productivity app, task organization",
-    },
-    { property: "og:title", content: "Welcome | React Task Manager" },
-    {
-      property: "og:description",
-      content:
-        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
-    },
-    { property: "og:type", content: "website" },
-    { name: "twitter:title", content: "Welcome | React Task Manager" },
-    {
-      name: "twitter:description",
-      content:
-        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
-    },
-    { name: "robots", content: "index, nofollow" },
   ];
 }
 
@@ -40,8 +21,14 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/tasks", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +46,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <main>
       <Header />
       <p style={{ maxWidth: "425px", marginBottom: "2rem" }}>
         A simple task manager built with React, React Router and TypeScript.
@@ -93,6 +80,6 @@ export default function Home() {
           {isLoading ? "Logging in..." : "Log In"}
         </button>
       </form>
-    </div>
+    </main>
   );
 }

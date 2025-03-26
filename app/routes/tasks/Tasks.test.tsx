@@ -2,15 +2,27 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Tasks from "./index";
 import { useTasks } from "~/context/TaskContext";
+import { useAuth } from "~/context/AuthContext";
 
 // Mock the TaskContext
 vi.mock("~/context/TaskContext", () => ({
   useTasks: vi.fn(),
 }));
 
+// Mock the AuthContext
+vi.mock("~/context/AuthContext", () => ({
+  useAuth: vi.fn(),
+}));
+
 // Mock the Header component
 vi.mock("~/components/Header", () => ({
   default: () => <div data-testid="mock-header">Header</div>,
+}));
+
+// Mock useNavigate
+const mockNavigate = vi.fn();
+vi.mock("react-router", () => ({
+  useNavigate: () => mockNavigate,
 }));
 
 describe("Tasks", () => {
@@ -30,11 +42,22 @@ describe("Tasks", () => {
     vi.clearAllMocks();
     mockTaskContext.filterTasks.mockReturnValue(mockTasks);
     (useTasks as any).mockReturnValue(mockTaskContext);
+    (useAuth as any).mockReturnValue({ isAuthenticated: true });
   });
 
-  it("renders the tasks page with form and filter buttons", () => {
+  it("redirects to home when not authenticated", async () => {
+    (useAuth as any).mockReturnValue({ isAuthenticated: false });
     render(<Tasks />);
 
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
+    });
+  });
+
+  it("renders the tasks page with form and filter buttons when authenticated", () => {
+    render(<Tasks />);
+
+    expect(screen.getByTestId("mock-header")).toBeInTheDocument();
     expect(screen.getByLabelText("Task Title")).toBeInTheDocument();
     expect(screen.getByLabelText("Due Date")).toBeInTheDocument();
     expect(
@@ -75,7 +98,7 @@ describe("Tasks", () => {
     expect(dueDateInput).toHaveValue("");
   });
 
-  it("prevents submission when fields are empty", async () => {
+  it("does not add task with empty fields", async () => {
     render(<Tasks />);
 
     const submitButton = screen.getByRole("button", { name: "Add Task" });
@@ -135,6 +158,13 @@ describe("Tasks", () => {
     });
   });
 
+  it("shows no tasks message when filter returns empty array", () => {
+    mockTaskContext.filterTasks.mockReturnValue([]);
+    render(<Tasks />);
+
+    expect(screen.getByText("No tasks found.")).toBeInTheDocument();
+  });
+
   it("handles errors during task addition", async () => {
     const error = new Error("Failed to add task");
     mockTaskContext.addTask.mockRejectedValue(error);
@@ -145,12 +175,12 @@ describe("Tasks", () => {
 
     fireEvent.change(titleInput, { target: { value: "New Task" } });
     fireEvent.change(dueDateInput, { target: { value: "2024-03-22" } });
-
-    // Click the button and wait for the error to be handled
     fireEvent.click(screen.getByRole("button", { name: "Add Task" }));
 
-    // Wait for the error to be handled and the button to return to its initial state
     await waitFor(() => {
+      expect(
+        screen.getByText("Failed to add task. Please try again.")
+      ).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Add Task" })).toBeEnabled();
       expect(titleInput).toHaveValue("New Task"); // Form should retain values on error
       expect(dueDateInput).toHaveValue("2024-03-22");
