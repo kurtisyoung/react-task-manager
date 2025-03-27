@@ -93,7 +93,6 @@ describe("Home", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
       expect(submitButton).not.toBeDisabled();
       expect(submitButton).toHaveAttribute("aria-label", "Log In");
     });

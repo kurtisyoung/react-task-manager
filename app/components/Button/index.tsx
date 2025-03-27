@@ -1,8 +1,4 @@
-import {
-  type ButtonHTMLAttributes,
-  type InputHTMLAttributes,
-  forwardRef,
-} from "react";
+import { type ButtonHTMLAttributes, type InputHTMLAttributes } from "react";
 import { button } from "./Button.css";
 
 interface BaseProps {
@@ -22,45 +18,36 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>, BaseProps {
 
 type Props = ButtonProps | InputProps;
 
-const Button = forwardRef<HTMLButtonElement | HTMLInputElement, Props>(
-  (
-    {
-      children,
-      variant = "filter",
-      active,
-      className,
-      as = "button",
-      ...props
-    },
-    ref
-  ) => {
-    const buttonClasses = button({ variant, active });
+const Button = ({
+  children,
+  variant = "filter",
+  active,
+  className,
+  as = "button",
+  ...props
+}: Props) => {
+  const buttonClasses = button({ variant, active });
 
-    if (as === "input") {
-      return (
-        <input
-          ref={ref as React.Ref<HTMLInputElement>}
-          type="submit"
-          className={buttonClasses}
-          value={children as string}
-          {...(props as InputProps)}
-        />
-      );
-    }
-
+  if (as === "input") {
     return (
-      <button
-        ref={ref as React.Ref<HTMLButtonElement>}
+      <input
+        type="submit"
         className={buttonClasses}
-        data-active={active}
-        {...(props as ButtonProps)}
-      >
-        {children}
-      </button>
+        value={children as string}
+        {...(props as InputProps)}
+      />
     );
   }
-);
 
-Button.displayName = "Button";
+  return (
+    <button
+      className={buttonClasses}
+      data-active={active}
+      {...(props as ButtonProps)}
+    >
+      {children}
+    </button>
+  );
+};
 
 export default Button;
