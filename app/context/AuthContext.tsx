@@ -4,6 +4,8 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
+  useMemo,
 } from "react";
 import { simulateApiCall } from "~/utils/simulateApiCall";
 
@@ -33,32 +35,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Simulate API call
-    await simulateApiCall("login", { email, password });
-
+  const login = useCallback(async (email: string, password: string) => {
     // For assessment purposes, accept any non-empty credentials
     if (email && password) {
+      // Simulate API call
+      await simulateApiCall("login", { email, password });
       sessionStorage.setItem("isAuthenticated", "true");
       sessionStorage.setItem("user", JSON.stringify({ email, password }));
       setIsAuthenticated(true);
     } else {
       throw new Error("Invalid credentials");
     }
-  };
+  }, []);
 
-  const logout = async () => {
-    await simulateApiCall("logout", {});
+  const logout = useCallback(async () => {
+    try {
+      await simulateApiCall("logout", {});
+    } catch (error) {
+      // Even if the API call fails, we still want to clear the session
+      console.error("Logout API error:", error);
+    }
     sessionStorage.removeItem("isAuthenticated");
     sessionStorage.removeItem("user");
     setIsAuthenticated(false);
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      isAuthenticated,
+      login,
+      logout,
+    }),
+    [isAuthenticated, login, logout]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
+import Button from "~/components/Button";
+import { errorMessage } from "~/styles/global.css";
 import * as styles from "./Home.css";
 
 export function meta() {
@@ -74,11 +76,15 @@ export default function Home() {
           />
         </div>
 
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {error && (
+          <div role="alert" className={errorMessage}>
+            {error}
+          </div>
+        )}
 
-        <button type="submit" className={styles.button} disabled={isLoading}>
+        <Button type="submit" variant="submit" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Log In"}
-        </button>
+        </Button>
       </form>
     </main>
   );

@@ -33,8 +33,8 @@ export const checkboxCustom = style({
       outlineOffset: "2px",
     },
     "&:hover": {
-      borderColor: "var(--colour-black) !important",
-      backgroundColor: "var(--colour-white) !important",
+      opacity: 0.75,
+      backgroundColor: "var(--colour-black) !important",
     },
   },
 });
@@ -92,22 +92,5 @@ export const taskDate = style({
       textDecoration: "line-through",
       color: "var(--colour-grey)",
     },
-  },
-});
-
-export const deleteButton = style({
-  padding: "0.5rem 1rem",
-  backgroundColor: "var(--colour-red)",
-  color: "var(--colour-white)",
-  border: "none",
-  cursor: "pointer",
-  transition: "all 100ms ease-in-out",
-  fontSize: "0.875rem",
-  ":hover": {
-    backgroundColor: "#b91c1c",
-  },
-  ":focus": {
-    outline: "2px solid var(--colour-blue)",
-    outlineOffset: "2px",
   },
 });

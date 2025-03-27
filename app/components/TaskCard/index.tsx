@@ -1,3 +1,5 @@
+import { memo, useCallback } from "react";
+import Button from "~/components/Button";
 import type { Task } from "~/types";
 import * as styles from "./TaskCard.css";
 
@@ -7,17 +9,29 @@ type TaskCardProps = {
   deleteTask: (id: string) => void;
 };
 
-export default function TaskCard({
-  task,
-  toggleTask,
-  deleteTask,
-}: TaskCardProps) {
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleTask(task.id);
-    }
-  };
+function TaskCard({ task, toggleTask, deleteTask }: TaskCardProps) {
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleTask(task.id);
+      }
+    },
+    [task.id, toggleTask]
+  );
+
+  const handleToggle = useCallback(() => {
+    toggleTask(task.id);
+  }, [task.id, toggleTask]);
+
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteTask(task.id);
+    },
+    [task.id, deleteTask]
+  );
+
   return (
     <div
       className={styles.taskCard}
@@ -25,7 +39,7 @@ export default function TaskCard({
       role="listitem"
       tabIndex={0}
       onKeyDown={handleKeyPress}
-      onClick={() => toggleTask(task.id)}
+      onClick={handleToggle}
     >
       <div className={styles.taskInfo}>
         <label className={styles.checkboxWrapper}>
@@ -33,7 +47,7 @@ export default function TaskCard({
             type="checkbox"
             checked={task.completed}
             className={styles.checkbox}
-            onChange={() => toggleTask(task.id)}
+            onChange={handleToggle}
             aria-label={`Mark "${task.title}" as ${
               task.completed ? "incomplete" : "complete"
             }`}
@@ -49,16 +63,15 @@ export default function TaskCard({
           </div>
         </div>
       </div>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          deleteTask(task.id);
-        }}
-        className={styles.deleteButton}
+      <Button
+        variant="delete"
+        onClick={handleDelete}
         aria-label={`Delete task: ${task.title}`}
       >
         Delete
-      </button>
+      </Button>
     </div>
   );
 }
+
+export default memo(TaskCard);

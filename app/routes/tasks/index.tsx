@@ -5,6 +5,8 @@ import { useAuth } from "~/context/AuthContext";
 import TaskCard from "~/components/TaskCard";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
+import Button from "~/components/Button";
+import { errorMessage } from "~/styles/global.css";
 import * as styles from "./Tasks.css";
 
 export function meta() {
@@ -82,17 +84,17 @@ export default function Tasks() {
             label="Due Date"
             required
           />
-          <button
+          <Button
             type="submit"
-            className={styles.button}
+            variant="submit"
             disabled={isLoading}
             aria-busy={isLoading}
           >
             {isLoading ? "Adding..." : "Add Task"}
-          </button>
+          </Button>
         </form>
         {error && (
-          <div role="alert" className={styles.errorMessage}>
+          <div role="alert" className={errorMessage}>
             {error}
           </div>
         )}
@@ -104,30 +106,27 @@ export default function Tasks() {
           role="toolbar"
           aria-label="Task filter options"
         >
-          <button
-            className={styles.filterButton}
+          <Button
             data-active={filter === "all"}
             onClick={() => setFilter("all")}
             aria-pressed={filter === "all"}
           >
             All Tasks
-          </button>
-          <button
-            className={styles.filterButton}
+          </Button>
+          <Button
             data-active={filter === "pending"}
             onClick={() => setFilter("pending")}
             aria-pressed={filter === "pending"}
           >
             Pending Tasks
-          </button>
-          <button
-            className={styles.filterButton}
+          </Button>
+          <Button
             data-active={filter === "completed"}
             onClick={() => setFilter("completed")}
             aria-pressed={filter === "completed"}
           >
             Completed Tasks
-          </button>
+          </Button>
         </div>
       </section>
 

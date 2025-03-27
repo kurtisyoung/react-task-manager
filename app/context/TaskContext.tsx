@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import type { ReactNode } from "react";
 import { simulateApiCall } from "~/utils/simulateApiCall";
 import type { Task } from "~/types";
@@ -30,7 +37,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = async (title: string, dueDate: string) => {
+  const addTask = useCallback(async (title: string, dueDate: string) => {
     // Simulate the API call for adding a task
     await simulateApiCall("add", { title, dueDate });
     const newTask: Task = {
@@ -40,9 +47,9 @@ export function TaskProvider({ children }: TaskProviderProps) {
       completed: false,
     };
     setTasks((prev) => [...prev, newTask]);
-  };
+  }, []);
 
-  const toggleTask = async (id: string) => {
+  const toggleTask = useCallback(async (id: string) => {
     // Simulate the API call for toggling a task's completion status
     await simulateApiCall("toggle", { id });
     setTasks((prev) =>
@@ -50,32 +57,40 @@ export function TaskProvider({ children }: TaskProviderProps) {
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
-  };
+  }, []);
 
-  const deleteTask = async (id: string) => {
+  const deleteTask = useCallback(async (id: string) => {
     // Simulate the API call for deleting a task
     await simulateApiCall("delete", { id });
     setTasks((prev) => prev.filter((task) => task.id !== id));
-  };
+  }, []);
 
-  const filterTasks = (status: "all" | "pending" | "completed") => {
-    switch (status) {
-      case "pending":
-        return tasks.filter((task) => !task.completed);
-      case "completed":
-        return tasks.filter((task) => task.completed);
-      default:
-        return tasks;
-    }
-  };
-
-  return (
-    <TaskContext.Provider
-      value={{ tasks, addTask, toggleTask, deleteTask, filterTasks }}
-    >
-      {children}
-    </TaskContext.Provider>
+  const filterTasks = useCallback(
+    (status: "all" | "pending" | "completed") => {
+      switch (status) {
+        case "pending":
+          return tasks.filter((task) => !task.completed);
+        case "completed":
+          return tasks.filter((task) => task.completed);
+        default:
+          return tasks;
+      }
+    },
+    [tasks]
   );
+
+  const value = useMemo(
+    () => ({
+      tasks,
+      addTask,
+      toggleTask,
+      deleteTask,
+      filterTasks,
+    }),
+    [tasks, addTask, toggleTask, deleteTask, filterTasks]
+  );
+
+  return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 }
 
 export function useTasks() {

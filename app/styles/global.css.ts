@@ -1,4 +1,4 @@
-import { globalStyle } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 
 globalStyle("html", {
   fontFamily: "Arial, sans-serif",
@@ -13,4 +13,10 @@ globalStyle("html", {
     "--colour-red": "#dc2626",
     "--colour-green": "#16a34a",
   },
+});
+
+export const errorMessage = style({
+  color: "var(--colour-red)",
+  marginTop: "0.5rem",
+  fontSize: "0.875rem",
 });

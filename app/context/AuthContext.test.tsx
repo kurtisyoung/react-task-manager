@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { simulateApiCall } from "~/utils/simulateApiCall";
 import "@testing-library/jest-dom";
+import { renderHook } from "@testing-library/react";
 
 // Mock simulateApiCall
 vi.mock("~/utils/simulateApiCall", () => ({
@@ -20,8 +21,9 @@ Object.defineProperty(window, "sessionStorage", {
 });
 
 // Test component that uses the auth context
-function TestComponent({ onLoginClick }: { onLoginClick?: () => void }) {
+function TestComponent() {
   const { isAuthenticated, login, logout } = useAuth();
+  console.log("isAuthenticated", isAuthenticated);
   return (
     <div>
       <div data-testid="auth-status">
@@ -30,11 +32,7 @@ function TestComponent({ onLoginClick }: { onLoginClick?: () => void }) {
       <button
         onClick={async () => {
           try {
-            if (onLoginClick) {
-              await onLoginClick();
-            } else {
-              await login("test@example.com", "password");
-            }
+            await login("test@example.com", "password");
           } catch (error) {
             // Ignore error in test component
           }
@@ -118,30 +116,14 @@ describe("AuthContext", () => {
   });
 
   test("handles login failure with empty credentials", async () => {
-    let error: Error | null = null;
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: ({ children }) => <AuthProvider>{children}</AuthProvider>,
+    });
 
-    render(
-      <AuthProvider>
-        <TestComponent
-          onLoginClick={async () => {
-            const { login } = useAuth();
-            try {
-              await login("", "");
-              console.log("login");
-            } catch (e) {
-              error = e as Error;
-            }
-          }}
-        />
-      </AuthProvider>
+    await expect(result.current.login("", "")).rejects.toThrow(
+      "Invalid credentials"
     );
 
-    const loginButton = screen.getByText("Login");
-    fireEvent.click(loginButton);
-
-    expect(screen.getByTestId("auth-status")).toHaveTextContent(
-      "Not Authenticated"
-    );
     expect(mockSessionStorage.setItem).not.toHaveBeenCalled();
   });
 
@@ -216,9 +198,9 @@ describe("AuthContext", () => {
     );
 
     const logoutButton = screen.getByText("Logout");
+    fireEvent.click(logoutButton);
 
     await waitFor(() => {
-      fireEvent.click(logoutButton);
       expect(screen.getByTestId("auth-status")).toHaveTextContent(
         "Not Authenticated"
       );

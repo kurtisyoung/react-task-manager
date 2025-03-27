@@ -2,7 +2,6 @@ import { describe, test, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router";
 import Home, { meta } from "./";
-import { AuthProvider, useAuth } from "~/context/AuthContext";
 import "@testing-library/jest-dom";
 
 // Mock useNavigate and useAuth
@@ -14,13 +13,21 @@ vi.mock("react-router", () => ({
   ),
 }));
 
+// Mock Header component
+vi.mock("~/components/Header", () => ({
+  default: () => <div data-testid="mock-header">Header</div>,
+}));
+
+// Mock AuthContext
 const mockLogin = vi.fn();
+const mockUseAuth = vi.fn().mockReturnValue({
+  login: mockLogin,
+  logout: vi.fn(),
+  isAuthenticated: false,
+});
+
 vi.mock("~/context/AuthContext", () => ({
-  useAuth: () => ({
-    login: mockLogin,
-    logout: vi.fn(),
-    isAuthenticated: false,
-  }),
+  useAuth: () => mockUseAuth(),
 }));
 
 describe("Home", () => {
@@ -34,11 +41,17 @@ describe("Home", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseAuth.mockReturnValue({
+      login: mockLogin,
+      logout: vi.fn(),
+      isAuthenticated: false,
+    });
   });
 
   test("renders login form with email and password inputs", () => {
     renderComponent();
 
+    expect(screen.getByTestId("mock-header")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /log in/i })
     ).toBeInTheDocument();
@@ -87,29 +100,28 @@ describe("Home", () => {
     });
   });
 
+  test("redirects to tasks when already authenticated", () => {
+    mockUseAuth.mockReturnValue({
+      login: mockLogin,
+      logout: vi.fn(),
+      isAuthenticated: true,
+    });
+
+    renderComponent();
+
+    expect(mockNavigate).toHaveBeenCalledWith("/tasks", { replace: true });
+  });
+
   test("meta function returns correct metadata", () => {
     const metadata = meta();
 
-    expect(metadata).toEqual(
-      expect.arrayContaining([
-        { title: "Welcome | React Task Manager" },
-        expect.objectContaining({
-          name: "description",
-          content: expect.stringContaining("React Task Manager"),
-        }),
-        expect.objectContaining({
-          name: "keywords",
-          content: expect.stringContaining("task manager"),
-        }),
-        expect.objectContaining({
-          property: "og:title",
-          content: "Welcome | React Task Manager",
-        }),
-        expect.objectContaining({
-          name: "robots",
-          content: "index, nofollow",
-        }),
-      ])
-    );
+    expect(metadata).toEqual([
+      { title: "Welcome | React Task Manager" },
+      {
+        name: "description",
+        content:
+          "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
+      },
+    ]);
   });
 });

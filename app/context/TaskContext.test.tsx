@@ -33,7 +33,7 @@ function TestComponent() {
           try {
             await addTask("Test Task", "2024-03-25");
           } catch (error) {
-            // Ignore error in test component
+            // Do nothing as this is a test
           }
         }}
       >
@@ -45,7 +45,7 @@ function TestComponent() {
             try {
               await toggleTask(tasks[0].id);
             } catch (error) {
-              // Ignore error in test component
+              // Do nothing as this is a test
             }
           }
         }}
