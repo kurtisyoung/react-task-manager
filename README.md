@@ -1,8 +1,11 @@
-# Welcome to React Router!
+# React Task Manager
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A simple task manager app using the React Router template.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Pages:
+
+- Home/Login
+- Tasks
 
 ## Features
 

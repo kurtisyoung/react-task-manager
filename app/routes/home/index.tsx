@@ -5,7 +5,6 @@ import { useAuth } from "~/context/AuthContext";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
 import Button from "~/components/Button";
-import { errorMessage } from "~/styles/global.css";
 import * as styles from "./Home.css";
 
 interface LoginFormData {
@@ -95,13 +94,6 @@ export default function Home() {
             id="password"
           />
         </div>
-
-        {error && (
-          <div role="alert" className={errorMessage}>
-            {error}
-          </div>
-        )}
-
         <Button
           as="input"
           variant="submit"
