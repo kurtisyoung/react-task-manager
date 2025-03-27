@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useTasks } from "~/context/TaskContext";
 import { useAuth } from "~/context/AuthContext";
 import TaskCard from "~/components/TaskCard";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
 import Button from "~/components/Button";
-import { errorMessage } from "~/styles/global.css";
 import * as styles from "./Tasks.css";
+
+interface TaskFormData {
+  title: string;
+  dueDate: string;
+}
 
 export function meta() {
   return [
@@ -21,14 +26,17 @@ export function meta() {
 }
 
 export default function Tasks() {
-  const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
   const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { addTask, toggleTask, deleteTask, filterTasks } = useTasks();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TaskFormData>();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -36,20 +44,13 @@ export default function Tasks() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !dueDate) {
-      setError("Please fill in all required fields");
-      return;
-    }
+  const onSubmit: SubmitHandler<TaskFormData> = async (data) => {
     try {
-      setError(null);
       setIsLoading(true);
-      await addTask(title, dueDate);
-      setTitle("");
-      setDueDate("");
+      await addTask(data.title, data.dueDate);
+      reset();
     } catch (err) {
-      setError("Failed to add task. Please try again.");
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +63,7 @@ export default function Tasks() {
       <Header />
       <section aria-label="Add new task">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className={styles.form}
           aria-label="New task form"
         >
@@ -70,34 +71,40 @@ export default function Tasks() {
             id="title"
             type="text"
             placeholder="Task title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
             label="Task Title"
-            required
+            error={errors.title?.message}
+            {...register("title", {
+              required: "Task title is required",
+              minLength: {
+                value: 3,
+                message: "Task title must be at least 3 characters",
+              },
+            })}
           />
           <InputGroup
             id="dueDate"
             type="date"
             placeholder="Due date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
             label="Due Date"
-            required
+            error={errors.dueDate?.message}
+            {...register("dueDate", {
+              required: "Due date is required",
+              pattern: {
+                value: /^\d{4}-\d{2}-\d{2}$/,
+                message: "Invalid date format",
+              },
+            })}
           />
           <Button
-            type="submit"
+            as="input"
             variant="submit"
             disabled={isLoading}
             aria-busy={isLoading}
+            aria-label="Add Task"
           >
             {isLoading ? "Adding..." : "Add Task"}
           </Button>
         </form>
-        {error && (
-          <div role="alert" className={errorMessage}>
-            {error}
-          </div>
-        )}
       </section>
 
       <section aria-label="Task filters">
@@ -107,21 +114,24 @@ export default function Tasks() {
           aria-label="Task filter options"
         >
           <Button
-            data-active={filter === "all"}
+            variant="filter"
+            active={filter === "all"}
             onClick={() => setFilter("all")}
             aria-pressed={filter === "all"}
           >
             All Tasks
           </Button>
           <Button
-            data-active={filter === "pending"}
+            variant="filter"
+            active={filter === "pending"}
             onClick={() => setFilter("pending")}
             aria-pressed={filter === "pending"}
           >
             Pending Tasks
           </Button>
           <Button
-            data-active={filter === "completed"}
+            variant="filter"
+            active={filter === "completed"}
             onClick={() => setFilter("completed")}
             aria-pressed={filter === "completed"}
           >

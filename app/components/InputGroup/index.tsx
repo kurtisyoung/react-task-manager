@@ -1,14 +1,19 @@
 import * as styles from "./InputGroup.css";
+import { type ChangeEvent } from "react";
 
-type InputGroupProps = {
+interface InputGroupProps {
   id: string;
   type: string;
   placeholder: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   required?: boolean;
-};
+  error?: string;
+  name?: string;
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
+}
 
 export default function InputGroup({
   id,
@@ -18,6 +23,11 @@ export default function InputGroup({
   onChange,
   label,
   required = false,
+  error,
+  name,
+  onBlur,
+  ref,
+  ...props
 }: InputGroupProps) {
   return (
     <div className={styles.inputGroup}>
@@ -28,13 +38,18 @@ export default function InputGroup({
       )}
       <input
         id={id}
+        className={`${styles.input} ${error ? styles.error : ""}`}
+        required={required}
         type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={styles.input}
-        required={required}
+        name={name}
+        onBlur={onBlur}
+        ref={ref}
+        {...props}
       />
+      {error && <span className={styles.errorMessage}>{error}</span>}
     </div>
   );
 }

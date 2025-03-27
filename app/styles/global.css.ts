@@ -14,9 +14,3 @@ globalStyle("html", {
     "--colour-green": "#16a34a",
   },
 });
-
-export const errorMessage = style({
-  color: "var(--colour-red)",
-  marginTop: "0.5rem",
-  fontSize: "0.875rem",
-});

@@ -23,6 +23,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check if sessionStorage is available
     return typeof sessionStorage !== "undefined"
       ? sessionStorage?.getItem("isAuthenticated") === "true"
       : false;
@@ -36,13 +37,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    // For assessment purposes, accept any non-empty credentials
+    // For assessment purposes accept any non-empty credentials
     if (email && password) {
-      // Simulate API call
-      await simulateApiCall("login", { email, password });
-      sessionStorage.setItem("isAuthenticated", "true");
-      sessionStorage.setItem("user", JSON.stringify({ email, password }));
-      setIsAuthenticated(true);
+      try {
+        // Simulate API call for login
+        await simulateApiCall("login", { email, password });
+        sessionStorage.setItem("isAuthenticated", "true");
+        sessionStorage.setItem("user", JSON.stringify({ email, password }));
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Login failed:", error);
+        throw new Error("Failed to login. Please try again.");
+      }
     } else {
       throw new Error("Invalid credentials");
     }
@@ -50,16 +56,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = useCallback(async () => {
     try {
+      // Simulate API call for logout
       await simulateApiCall("logout", {});
+      sessionStorage.removeItem("isAuthenticated");
+      sessionStorage.removeItem("user");
+      setIsAuthenticated(false);
     } catch (error) {
-      // Even if the API call fails, we still want to clear the session
-      console.error("Logout API error:", error);
+      console.error("Logout failed:", error);
+      throw new Error("Failed to logout. Please try again.");
     }
-    sessionStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("user");
-    setIsAuthenticated(false);
   }, []);
 
+  // Memoize the value to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       isAuthenticated,

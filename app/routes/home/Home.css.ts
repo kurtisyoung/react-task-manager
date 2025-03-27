@@ -9,5 +9,5 @@ export const formGroup = style({
   marginBottom: "1rem",
   display: "flex",
   flexDirection: "column",
-  gap: "1rem",
+  gap: "0.5rem",
 });

@@ -4,7 +4,7 @@ export const form = style({
   display: "grid",
   gap: "1rem",
   marginBottom: "2rem",
-  alignItems: "flex-end",
+  alignItems: "center",
   "@media": {
     "screen and (min-width: 640px)": {
       gridTemplateColumns: "1fr 1fr auto",

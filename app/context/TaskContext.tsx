@@ -26,6 +26,7 @@ interface TaskProviderProps {
 
 export function TaskProvider({ children }: TaskProviderProps) {
   const [tasks, setTasks] = useState<Task[]>(() => {
+    // Check if localStorage is available
     const savedTasks =
       typeof localStorage !== "undefined"
         ? localStorage.getItem("tasks")
@@ -34,35 +35,54 @@ export function TaskProvider({ children }: TaskProviderProps) {
   });
 
   useEffect(() => {
+    // Initial fetch from the API here
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   const addTask = useCallback(async (title: string, dueDate: string) => {
-    // Simulate the API call for adding a task
-    await simulateApiCall("add", { title, dueDate });
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title,
-      dueDate,
-      completed: false,
-    };
-    setTasks((prev) => [...prev, newTask]);
+    try {
+      // Simulate the API call for adding a task
+      // POST request to the API
+      await simulateApiCall("add", { title, dueDate });
+      const newTask: Task = {
+        id: Date.now().toString(),
+        title,
+        dueDate,
+        completed: false,
+      };
+      setTasks((prev) => [...prev, newTask]);
+    } catch (error) {
+      console.error("Failed to add task:", error);
+      throw new Error("Failed to add task. Please try again.");
+    }
   }, []);
 
   const toggleTask = useCallback(async (id: string) => {
-    // Simulate the API call for toggling a task's completion status
-    await simulateApiCall("toggle", { id });
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+    try {
+      // Simulate the API call for toggling a task's completion status
+      // PATCH request to the API instead of PUT because it's a partial update
+      await simulateApiCall("toggle", { id });
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === id ? { ...task, completed: !task.completed } : task
+        )
+      );
+    } catch (error) {
+      console.error("Failed to toggle task:", error);
+      throw new Error("Failed to update task status. Please try again.");
+    }
   }, []);
 
   const deleteTask = useCallback(async (id: string) => {
-    // Simulate the API call for deleting a task
-    await simulateApiCall("delete", { id });
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    try {
+      // Simulate the API call for deleting a task
+      // DELETE request to the API
+      await simulateApiCall("delete", { id });
+      setTasks((prev) => prev.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+      throw new Error("Failed to delete task. Please try again.");
+    }
   }, []);
 
   const filterTasks = useCallback(
@@ -79,6 +99,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
     [tasks]
   );
 
+  // Memoize the value to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       tasks,

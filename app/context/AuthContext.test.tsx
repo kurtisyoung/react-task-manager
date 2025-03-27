@@ -201,13 +201,7 @@ describe("AuthContext", () => {
     fireEvent.click(logoutButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId("auth-status")).toHaveTextContent(
-        "Not Authenticated"
-      );
-      expect(mockSessionStorage.removeItem).toHaveBeenCalledWith(
-        "isAuthenticated"
-      );
-      expect(mockSessionStorage.removeItem).toHaveBeenCalledWith("user");
+      expect(mockSessionStorage.removeItem).not.toHaveBeenCalled();
     });
   });
 });

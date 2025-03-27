@@ -21,12 +21,6 @@ export const button = recipe({
       color: "var(--colour-white)",
       cursor: "not-allowed",
     },
-    selectors: {
-      '&[data-active="true"]': {
-        backgroundColor: "var(--colour-black)",
-        color: "var(--colour-white)",
-      },
-    },
   },
   variants: {
     variant: {
@@ -39,6 +33,7 @@ export const button = recipe({
         fontSize: "1rem",
         height: "3rem",
         width: "100%",
+        marginBottom: "0.6rem",
         ":hover": {
           backgroundColor: "#404040",
         },
@@ -51,6 +46,12 @@ export const button = recipe({
         ":hover": {
           backgroundColor: "#b91c1c",
         },
+      },
+    },
+    active: {
+      true: {
+        backgroundColor: "var(--colour-black)",
+        color: "var(--colour-white)",
       },
     },
   },

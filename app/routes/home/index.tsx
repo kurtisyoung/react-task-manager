@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "~/context/AuthContext";
 import InputGroup from "~/components/InputGroup";
 import Header from "~/components/Header";
 import Button from "~/components/Button";
 import { errorMessage } from "~/styles/global.css";
 import * as styles from "./Home.css";
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export function meta() {
   return [
@@ -19,12 +25,15 @@ export function meta() {
 }
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,13 +41,14 @@ export default function Home() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setError("");
     setIsLoading(true);
 
+    console.log(errors);
+
     try {
-      await login(email, password);
+      await login(data.email, data.password);
       navigate("/tasks", { replace: true });
     } catch (err) {
       setError("Invalid credentials. Please try again.");
@@ -55,23 +65,33 @@ export default function Home() {
         Create, organize, and track your tasks with an intuitive interface.
       </p>
 
-      <form className={styles.loginForm} onSubmit={handleSubmit}>
+      <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
         <h2 style={{ fontSize: "1.5rem", fontWeight: "500" }}>Log In</h2>
         <div className={styles.formGroup}>
           <InputGroup
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
+            error={errors.email?.message}
             id="email"
           />
           <InputGroup
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            error={errors.password?.message}
             id="password"
           />
         </div>
@@ -82,7 +102,12 @@ export default function Home() {
           </div>
         )}
 
-        <Button type="submit" variant="submit" disabled={isLoading}>
+        <Button
+          as="input"
+          variant="submit"
+          disabled={isLoading}
+          aria-label="Log In"
+        >
           {isLoading ? "Logging in..." : "Log In"}
         </Button>
       </form>

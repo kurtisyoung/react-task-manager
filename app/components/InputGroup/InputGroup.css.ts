@@ -4,22 +4,43 @@ export const inputGroup = style({
   display: "flex",
   flexDirection: "column",
   gap: "0.5rem",
+  position: "relative",
 });
 
 export const label = style({
-  fontSize: "1rem",
-  fontWeight: "bold",
+  fontSize: "0.875rem",
+  fontWeight: "500",
+  color: "var(--colour-black)",
 });
 
 export const input = style({
-  padding: "0.75rem 0 0.75rem",
+  padding: "0.75rem 0 0.75rem 0",
+  marginBottom: "2rem",
   border: "none",
-  borderBottom: "1px solid #000000",
+  borderBottom: "1px solid var(--colour-black)",
   fontSize: "1rem",
-  height: "1.35rem",
-  transition: "all 100ms ease-in-out",
   ":focus": {
-    outline: "none",
-    borderColor: "#d1d1d1",
+    outline: "2px solid var(--colour-blue)",
+    outlineOffset: "2px",
   },
+  selectors: {
+    "&.error": {
+      borderColor: "var(--colour-red)",
+    },
+    "&.error:focus": {
+      outlineColor: "var(--colour-red)",
+    },
+  },
+});
+
+export const error = style({
+  borderColor: "var(--colour-red)",
+});
+
+export const errorMessage = style({
+  color: "var(--colour-red)",
+  fontSize: "0.875rem",
+  marginTop: "0.25rem",
+  position: "absolute",
+  bottom: "0",
 });

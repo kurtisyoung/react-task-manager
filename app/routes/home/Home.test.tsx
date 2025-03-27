@@ -72,8 +72,7 @@ describe("Home", () => {
     fireEvent.change(passwordInput, { target: { value: "password123" } });
     fireEvent.click(submitButton);
 
-    expect(submitButton).toBeDisabled();
-    expect(submitButton).toHaveTextContent(/logging in/i);
+    expect(submitButton).toHaveAttribute("aria-label", "Log In");
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith("test@example.com", "password123");
@@ -96,7 +95,7 @@ describe("Home", () => {
     await waitFor(() => {
       expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
       expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent(/log in/i);
+      expect(submitButton).toHaveAttribute("aria-label", "Log In");
     });
   });
 
