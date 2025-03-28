@@ -10,7 +10,7 @@
     "typecheck": "react-router typegen && tsc",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "predeploy": "DEPLOY_ENV=production npm run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build/client"
   },
   "dependencies": {
