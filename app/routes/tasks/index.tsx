@@ -15,14 +15,7 @@ interface TaskFormData {
 }
 
 export function meta() {
-  return [
-    { title: "Tasks | React Task Manager" },
-    {
-      name: "description",
-      content:
-        "Manage and organize your tasks efficiently. Create, track, and complete tasks with our intuitive task management interface.",
-    },
-  ];
+  return [{ title: "Tasks | React Task Manager" }];
 }
 
 export default function Tasks() {

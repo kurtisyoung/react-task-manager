@@ -5,5 +5,5 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [reactRouter(), tsconfigPaths(), vanillaExtractPlugin()],
-  base: "/react-task-manager",
+  base: "/",
 });

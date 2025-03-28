@@ -58,6 +58,7 @@ function TestComponent() {
 describe("AuthContext", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock the session storage to return null
     mockSessionStorage.getItem.mockReturnValue(null);
   });
 
@@ -88,6 +89,7 @@ describe("AuthContext", () => {
   });
 
   test("handles successful login", async () => {
+    // Mock the simulateApiCall to resolve immediately
     vi.mocked(simulateApiCall).mockResolvedValueOnce(undefined);
 
     render(

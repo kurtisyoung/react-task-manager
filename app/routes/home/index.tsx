@@ -13,14 +13,7 @@ interface LoginFormData {
 }
 
 export function meta() {
-  return [
-    { title: "Welcome | React Task Manager" },
-    {
-      name: "description",
-      content:
-        "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
-    },
-  ];
+  return [{ title: "Welcome | React Task Manager" }];
 }
 
 export default function Home() {
