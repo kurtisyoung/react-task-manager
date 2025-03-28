@@ -34,12 +34,12 @@ export function TaskProvider({ children }: TaskProviderProps) {
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
 
+  // Save tasks to localStorage
   useEffect(() => {
-    // Initial fetch from the API here
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = useCallback(async (title: string, dueDate: string) => {
+  const addTask = async (title: string, dueDate: string) => {
     try {
       // Simulate the API call for adding a task
       // POST request to the API
@@ -55,7 +55,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
       console.error("Failed to add task:", error);
       throw new Error("Failed to add task. Please try again.");
     }
-  }, []);
+  };
 
   const toggleTask = useCallback(async (id: string) => {
     try {
@@ -108,7 +108,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
       deleteTask,
       filterTasks,
     }),
-    [tasks, addTask, toggleTask, deleteTask, filterTasks]
+    [tasks]
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

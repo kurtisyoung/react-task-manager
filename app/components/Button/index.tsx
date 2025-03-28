@@ -22,7 +22,6 @@ const Button = ({
   children,
   variant = "filter",
   active,
-  className,
   as = "button",
   ...props
 }: Props) => {

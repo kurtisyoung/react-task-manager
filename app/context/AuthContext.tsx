@@ -3,8 +3,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
-  useCallback,
   useMemo,
 } from "react";
 import { simulateApiCall } from "~/utils/simulateApiCall";
@@ -12,7 +10,7 @@ import { simulateApiCall } from "~/utils/simulateApiCall";
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,14 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       : false;
   });
 
-  useEffect(() => {
-    const authStatus = sessionStorage.getItem("isAuthenticated");
-    if (authStatus === "true") {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const login = useCallback(async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     // For assessment purposes accept any non-empty credentials
     if (email && password) {
       try {
@@ -52,9 +43,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } else {
       throw new Error("Invalid credentials");
     }
-  }, []);
+  };
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     try {
       // Simulate API call for logout
       await simulateApiCall("logout", {});
@@ -65,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error("Logout failed:", error);
       throw new Error("Failed to logout. Please try again.");
     }
-  }, []);
+  };
 
   // Memoize the value to prevent unnecessary re-renders
   const value = useMemo(
@@ -74,7 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       logout,
     }),
-    [isAuthenticated, login, logout]
+    [isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
