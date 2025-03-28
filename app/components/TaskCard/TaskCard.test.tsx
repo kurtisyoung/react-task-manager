@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import TaskCard from "./index";
+import { describe, test, expect, vi } from "vitest";
+import TaskCard from "./";
 import type { Task } from "~/types";
 
 // Mock task data
@@ -12,7 +12,7 @@ const mockTask: Task = {
 };
 
 describe("TaskCard", () => {
-  it("renders task information correctly", () => {
+  test("renders task information correctly", () => {
     const toggleTask = vi.fn();
     const deleteTask = vi.fn();
 
@@ -35,7 +35,7 @@ describe("TaskCard", () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it("renders completed task with correct styling", () => {
+  test("renders completed task with correct styling", () => {
     const completedTask: Task = {
       ...mockTask,
       completed: true,
@@ -58,7 +58,7 @@ describe("TaskCard", () => {
     expect(taskTitle).toHaveAttribute("data-completed", "true");
   });
 
-  it("calls toggleTask when checkbox is clicked", () => {
+  test("calls toggleTask when checkbox is clicked", () => {
     const toggleTask = vi.fn();
     const deleteTask = vi.fn();
 
@@ -76,7 +76,7 @@ describe("TaskCard", () => {
     expect(toggleTask).toHaveBeenCalledWith(mockTask.id);
   });
 
-  it("calls deleteTask when delete button is clicked", () => {
+  test("calls deleteTask when delete button is clicked", () => {
     const toggleTask = vi.fn();
     const deleteTask = vi.fn();
 

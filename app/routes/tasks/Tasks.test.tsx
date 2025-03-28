@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import Tasks from "./index";
+import { describe, test, expect, vi, beforeEach } from "vitest";
+import Tasks from "./";
 import { useTasks } from "~/context/TaskContext";
 import { useAuth } from "~/context/AuthContext";
 
@@ -45,7 +45,7 @@ describe("Tasks", () => {
     (useAuth as any).mockReturnValue({ isAuthenticated: true });
   });
 
-  it("redirects to home when not authenticated", async () => {
+  test("redirects to home when not authenticated", async () => {
     (useAuth as any).mockReturnValue({ isAuthenticated: false });
     render(<Tasks />);
 
@@ -54,7 +54,7 @@ describe("Tasks", () => {
     });
   });
 
-  it("renders the tasks page with form and filter buttons when authenticated", () => {
+  test("renders the tasks page with form and filter buttons when authenticated", () => {
     render(<Tasks />);
 
     expect(screen.getByTestId("mock-header")).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("Tasks", () => {
     ).toBeInTheDocument();
   });
 
-  it("handles task submission", async () => {
+  test("handles task submission", async () => {
     render(<Tasks />);
 
     const titleInput = screen.getByLabelText("Task Title");
@@ -98,7 +98,7 @@ describe("Tasks", () => {
     expect(dueDateInput).toHaveValue("");
   });
 
-  it("does not add task with empty fields", async () => {
+  test("does not add task with empty fields", async () => {
     render(<Tasks />);
 
     const submitButton = screen.getByRole("button", { name: "Add Task" });
@@ -107,7 +107,7 @@ describe("Tasks", () => {
     expect(mockTaskContext.addTask).not.toHaveBeenCalled();
   });
 
-  it("handles filter changes", () => {
+  test("handles filter changes", () => {
     render(<Tasks />);
 
     const pendingButton = screen.getByRole("button", { name: "Pending Tasks" });
@@ -148,7 +148,7 @@ describe("Tasks", () => {
   //   });
   // });
 
-  it("renders task cards for filtered tasks", () => {
+  test("renders task cards for filtered tasks", () => {
     render(<Tasks />);
 
     mockTasks.forEach((task) => {
@@ -156,14 +156,14 @@ describe("Tasks", () => {
     });
   });
 
-  it("shows no tasks message when filter returns empty array", () => {
+  test("shows no tasks message when filter returns empty array", () => {
     mockTaskContext.filterTasks.mockReturnValue([]);
     render(<Tasks />);
 
     expect(screen.getByText("No tasks found.")).toBeInTheDocument();
   });
 
-  it("handles errors during task addition", async () => {
+  test("handles errors during task addition", async () => {
     const error = new Error("Failed to add task");
     mockTaskContext.addTask.mockRejectedValue(error);
     render(<Tasks />);

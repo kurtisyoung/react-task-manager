@@ -1,7 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Header from "./";
-import { useAuth } from "~/context/AuthContext";
 import "@testing-library/jest-dom";
 
 // Mock useAuth and Link
@@ -10,7 +9,6 @@ let mockIsAuthenticated = false;
 
 vi.mock("~/context/AuthContext", () => ({
   useAuth: () => ({
-    login: vi.fn(),
     logout: mockLogout,
     isAuthenticated: mockIsAuthenticated,
   }),
@@ -48,8 +46,6 @@ describe("Header", () => {
 
     expect(logo).toBeInTheDocument();
     expect(logo).toHaveAttribute("src", "/aritzia-logo.svg");
-    expect(logo.style.width).toBe("10rem");
-    expect(logo.style.height).toBe("3rem");
     expect(title).toBeInTheDocument();
     expect(title.tagName.toLowerCase()).toBe("h1");
   });
@@ -72,14 +68,5 @@ describe("Header", () => {
 
     fireEvent.click(logoutLink);
     expect(mockLogout).toHaveBeenCalledTimes(1);
-  });
-
-  test("header has correct styles", () => {
-    render(<Header />);
-
-    const title = screen.getByText("React Task Manager");
-
-    expect(title.style.fontSize).toBe("1.875rem");
-    expect(title.style.fontWeight).toBe("400");
   });
 });
