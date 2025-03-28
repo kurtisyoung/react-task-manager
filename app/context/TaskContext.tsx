@@ -108,7 +108,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
       deleteTask,
       filterTasks,
     }),
-    [tasks]
+    [tasks, filterTasks]
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
