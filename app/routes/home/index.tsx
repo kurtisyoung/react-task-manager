@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "~/context/AuthContext";
 import InputGroup from "~/components/InputGroup";
