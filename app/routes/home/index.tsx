@@ -12,10 +12,6 @@ interface LoginFormData {
   password: string;
 }
 
-export function meta() {
-  return [{ title: "Welcome | React Task Manager" }];
-}
-
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();

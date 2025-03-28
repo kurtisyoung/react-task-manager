@@ -109,17 +109,4 @@ describe("Home", () => {
 
     expect(mockNavigate).toHaveBeenCalledWith("/tasks", { replace: true });
   });
-
-  test("meta function returns correct metadata", () => {
-    const metadata = meta();
-
-    expect(metadata).toEqual([
-      { title: "Welcome | React Task Manager" },
-      {
-        name: "description",
-        content:
-          "Get started with React Task Manager - A modern task management application. Sign in to create, organize, and track your tasks efficiently.",
-      },
-    ]);
-  });
 });

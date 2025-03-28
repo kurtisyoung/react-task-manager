@@ -125,29 +125,6 @@ describe("Tasks", () => {
     expect(mockTaskContext.filterTasks).toHaveBeenCalledWith("all");
   });
 
-  // it("displays loading state during task addition", async () => {
-  //   mockTaskContext.addTask.mockImplementation(
-  //     () => new Promise((resolve) => setTimeout(resolve, 100))
-  //   );
-  //   render(<Tasks />);
-
-  //   const titleInput = screen.getByLabelText("Task Title");
-  //   const dueDateInput = screen.getByLabelText("Due Date");
-
-  //   fireEvent.change(titleInput, { target: { value: "New Task" } });
-  //   fireEvent.change(dueDateInput, { target: { value: "2024-03-22" } });
-  //   fireEvent.click(screen.getByRole("button", { name: "Add Task" }));
-  //   expect(
-  //     screen.getByRole("button", { name: "Adding..." })
-  //   ).toBeInTheDocument();
-
-  //   await waitFor(() => {
-  //     expect(
-  //       screen.getByRole("button", { name: "Add Task" })
-  //     ).toBeInTheDocument();
-  //   });
-  // });
-
   test("renders task cards for filtered tasks", () => {
     render(<Tasks />);
 

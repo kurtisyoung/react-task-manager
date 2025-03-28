@@ -14,10 +14,6 @@ interface TaskFormData {
   dueDate: string;
 }
 
-export function meta() {
-  return [{ title: "Tasks | React Task Manager" }];
-}
-
 export default function Tasks() {
   const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
   const [isLoading, setIsLoading] = useState(false);
