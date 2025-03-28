@@ -3,11 +3,11 @@ import Button from "~/components/Button";
 import type { Task } from "~/types";
 import * as styles from "./TaskCard.css";
 
-type TaskCardProps = {
+interface TaskCardProps {
   task: Task;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
-};
+}
 
 function TaskCard({ task, toggleTask, deleteTask }: TaskCardProps) {
   const handleKeyPress = useCallback(
