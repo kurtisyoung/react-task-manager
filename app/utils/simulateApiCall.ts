@@ -1,7 +1,10 @@
-let lastApiCallTime = 0;
 const rateLimitInterval = 1000; // Minimum interval (ms) between API calls
 
-export const simulateApiCall = (action: string, data?: any) => {
+export const simulateApiCall = (
+  action: string,
+  data?: any,
+  lastApiCallTime: number = 0
+) => {
   const now = Date.now();
   if (now - lastApiCallTime < rateLimitInterval) {
     return Promise.reject(
@@ -10,15 +13,9 @@ export const simulateApiCall = (action: string, data?: any) => {
       )
     );
   }
-  lastApiCallTime = now;
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ action, data, status: "success" });
+      resolve({ action, data, status: "success", lastApiCallTime: now });
     }, 500);
   });
-};
-
-// Export a reset function for testing purposes
-export const resetLastApiCallTime = () => {
-  lastApiCallTime = 0;
 };

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { simulateApiCall, resetLastApiCallTime } from "./simulateApiCall";
+import { simulateApiCall } from "./simulateApiCall";
 
 interface ApiResponse {
   action: string;
   data?: any;
   status: "success";
+  lastApiCallTime: number;
 }
 
 let now = 0;
@@ -14,7 +15,6 @@ describe("simulateApiCall", () => {
     now = 1000; // Start at a safe time
     vi.useFakeTimers();
     vi.spyOn(Date, "now").mockImplementation(() => now);
-    resetLastApiCallTime(); // Reset the rate limit state
   });
 
   afterEach(() => {
@@ -33,12 +33,12 @@ describe("simulateApiCall", () => {
       action,
       data,
       status: "success",
+      lastApiCallTime: now,
     });
   });
 
   it("handles calls without data", async () => {
     const action = "test";
-    now += 1100; // Advance past rate limit
 
     const promise = simulateApiCall(action);
     vi.advanceTimersByTime(500);
@@ -47,6 +47,7 @@ describe("simulateApiCall", () => {
       action,
       data: undefined,
       status: "success",
+      lastApiCallTime: now,
     });
   });
 
@@ -61,7 +62,11 @@ describe("simulateApiCall", () => {
     expect(firstResult.status).toBe("success");
 
     // Second call within rate limit should fail
-    const secondPromise = simulateApiCall(action, data);
+    const secondPromise = simulateApiCall(
+      action,
+      data,
+      firstResult.lastApiCallTime
+    );
     await expect(secondPromise).rejects.toThrow(
       "Rate limit exceeded. Please wait before making another request."
     );
@@ -81,7 +86,11 @@ describe("simulateApiCall", () => {
     now += 1100;
 
     // Second call should succeed after rate limit period
-    const secondPromise = simulateApiCall(action, data);
+    const secondPromise = simulateApiCall(
+      action,
+      data,
+      firstResult.lastApiCallTime
+    );
     vi.advanceTimersByTime(500);
     const secondResult = (await secondPromise) as ApiResponse;
     expect(secondResult.status).toBe("success");
@@ -113,18 +122,26 @@ describe("simulateApiCall", () => {
     // First call
     const firstPromise = simulateApiCall(action);
     vi.advanceTimersByTime(500);
-    await firstPromise;
+    const firstResult = (await firstPromise) as ApiResponse;
 
     // Advance time past rate limit
     now += 1100;
 
     // Second call
-    const secondPromise = simulateApiCall(action);
+    const secondPromise = simulateApiCall(
+      action,
+      undefined,
+      firstResult.lastApiCallTime
+    );
     vi.advanceTimersByTime(500);
-    await secondPromise;
+    const secondResult = (await secondPromise) as ApiResponse;
 
     // Verify that rate limiting is working
-    const thirdPromise = simulateApiCall(action);
+    const thirdPromise = simulateApiCall(
+      action,
+      undefined,
+      secondResult.lastApiCallTime
+    );
     await expect(thirdPromise).rejects.toThrow(
       "Rate limit exceeded. Please wait before making another request."
     );
