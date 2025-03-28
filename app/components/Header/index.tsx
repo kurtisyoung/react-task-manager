@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useAuth } from "~/context/AuthContext";
+import logo from "/aritzia-logo.svg";
 import * as styles from "./Header.css";
 
 export default function Header() {
@@ -7,7 +8,7 @@ export default function Header() {
   return (
     <div className={styles.header}>
       <img
-        src="/aritzia-logo.svg"
+        src={logo}
         alt="Aritzia"
         style={{ width: "10rem", height: "3rem" }}
       />

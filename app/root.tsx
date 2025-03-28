@@ -8,11 +8,12 @@ import {
 } from "react-router";
 import { TaskProvider } from "./context/TaskContext";
 import { AuthProvider } from "./context/AuthContext";
+import favicon from "/favicon.png";
 import type { Route } from "./+types/root";
 import "./styles/global.css";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", type: "image/png", href: "/favicon.png" },
+  { rel: "icon", type: "image/png", href: favicon },
 ];
 
 export const meta: Route.MetaFunction = () => [

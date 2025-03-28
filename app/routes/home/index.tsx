@@ -17,7 +17,6 @@ export function meta() {
 }
 
 export default function Home() {
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -34,16 +33,13 @@ export default function Home() {
   }, [isAuthenticated, navigate]);
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    setError("");
     setIsLoading(true);
-
-    console.log(errors);
 
     try {
       await login(data.email, data.password);
       navigate("/tasks", { replace: true });
     } catch (err) {
-      setError("Invalid credentials. Please try again.");
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
